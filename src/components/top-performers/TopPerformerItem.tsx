@@ -11,14 +11,14 @@ interface TopPerformerItemProps {
 }
 
 const TopPerformerItem = ({ team, index }: TopPerformerItemProps) => {
-  // Get the Hungarian team name
+  // Magyar csapatnév lekérése
   const teamName = getHungarianTeamName(team.team);
   
-  // Create a renderForm function that works with both string and array types
+  // renderForm függvény, ami mind a string és tömb típusokkal működik
   const renderFormIndicators = () => {
     if (!team.form) return null;
     
-    // Handle both string and array types
+    // Kezeli mindkét típust (string és tömb)
     const formItems = Array.isArray(team.form) 
       ? team.form.slice(0, 5) 
       : team.form.substring(0, 5).split("");

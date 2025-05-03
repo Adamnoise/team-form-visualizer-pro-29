@@ -18,10 +18,10 @@ const HeadToHeadComparison = memo(({ team1, team2, matches, standings }: HeadToH
     if (!team1 || !team2) return [];
     
     return matches.filter(match => 
-      (match.home_team.toLowerCase() === team1.id.toLowerCase() && 
-       match.away_team.toLowerCase() === team2.id.toLowerCase()) ||
-      (match.home_team.toLowerCase() === team2.id.toLowerCase() && 
-       match.away_team.toLowerCase() === team1.id.toLowerCase())
+      (match.homeTeamId?.toLowerCase() === team1.id.toLowerCase() && 
+       match.awayTeamId?.toLowerCase() === team2.id.toLowerCase()) ||
+      (match.homeTeamId?.toLowerCase() === team2.id.toLowerCase() && 
+       match.awayTeamId?.toLowerCase() === team1.id.toLowerCase())
     ).sort((a, b) => {
       try {
         const dateA = new Date(a.date);
@@ -58,19 +58,19 @@ const HeadToHeadComparison = memo(({ team1, team2, matches, standings }: HeadToH
     let team2Goals = 0;
     
     h2hMatches.forEach(match => {
-      if (match.home_team.toLowerCase() === team1.id.toLowerCase()) {
-        team1Goals += match.home_score;
-        team2Goals += match.away_score;
+      if (match.homeTeamId?.toLowerCase() === team1.id.toLowerCase()) {
+        team1Goals += match.homeScore || 0;
+        team2Goals += match.awayScore || 0;
         
-        if (match.home_score > match.away_score) team1Wins++;
-        else if (match.home_score < match.away_score) team2Wins++;
+        if ((match.homeScore || 0) > (match.awayScore || 0)) team1Wins++;
+        else if ((match.homeScore || 0) < (match.awayScore || 0)) team2Wins++;
         else draws++;
       } else {
-        team1Goals += match.away_score;
-        team2Goals += match.home_score;
+        team1Goals += match.awayScore || 0;
+        team2Goals += match.homeScore || 0;
         
-        if (match.away_score > match.home_score) team1Wins++;
-        else if (match.away_score < match.home_score) team2Wins++;
+        if ((match.awayScore || 0) > (match.homeScore || 0)) team1Wins++;
+        else if ((match.awayScore || 0) < (match.homeScore || 0)) team2Wins++;
         else draws++;
       }
     });
@@ -85,7 +85,7 @@ const HeadToHeadComparison = memo(({ team1, team2, matches, standings }: HeadToH
     };
   }, [team1, team2, h2hMatches]);
   
-  // If either team is not selected, show a prompt
+  // Ha valamelyik csapat nincs kiválasztva, mutatunk egy üzenetet
   if (!team1 || !team2) {
     return (
       <Card className="bg-black/20 border-white/5">

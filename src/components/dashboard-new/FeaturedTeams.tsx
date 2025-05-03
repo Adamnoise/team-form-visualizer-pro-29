@@ -1,14 +1,16 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { TEAMS } from '@/data/teamsData';
 
 const FeaturedTeams = () => {
-  const featuredTeams = [
-    { name: 'Team 1', league: 'Premier League', stadium: 'Stadium 1', logo: '/placeholder.svg' },
-    { name: 'Team 2', league: 'Premier League', stadium: 'Stadium 2', logo: '/placeholder.svg' },
-    { name: 'Team 3', league: 'Premier League', stadium: 'Stadium 3', logo: '/placeholder.svg' },
-    { name: 'Team 4', league: 'Premier League', stadium: 'Stadium 4', logo: '/placeholder.svg' },
-  ];
+  // Kiválasztunk 4 csapatot a TEAMS tömbből
+  const featuredTeams = TEAMS.slice(0, 4).map(team => ({
+    name: team.name,
+    league: 'Premier League',
+    stadium: `${team.name} Stadium`,
+    logo: team.logoUrl || '/placeholder.svg'
+  }));
 
   return (
     <div className="py-8 space-y-4">

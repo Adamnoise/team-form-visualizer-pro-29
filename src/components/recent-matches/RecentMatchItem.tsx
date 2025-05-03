@@ -13,9 +13,9 @@ interface RecentMatchItemProps {
 const RecentMatchItem = memo(({ match }: RecentMatchItemProps) => {
   const formattedDate = formatShortDate(match.date);
   
-  // Always use Hungarian team names, even if the data source uses English names
-  const homeTeamName = getHungarianTeamName(match.home_team);
-  const awayTeamName = getHungarianTeamName(match.away_team);
+  // Mindig magyar csapatneveket használunk, még akkor is, ha az adatforrás angol neveket használ
+  const homeTeamName = getHungarianTeamName(match.homeTeamId);
+  const awayTeamName = getHungarianTeamName(match.awayTeamId);
   
   return (
     <div className="bg-black/30 rounded-lg p-3 border border-white/5">
@@ -26,7 +26,7 @@ const RecentMatchItem = memo(({ match }: RecentMatchItemProps) => {
       
       <div className="flex justify-between items-center">
         <Link 
-          to={`/teams/${match.home_team.toLowerCase()}`}
+          to={`/teams/${match.homeTeamId.toLowerCase()}`}
           className="flex-1 text-right hover:text-blue-400 transition-colors"
         >
           <div className="font-medium text-white">{homeTeamName}</div>
@@ -36,17 +36,17 @@ const RecentMatchItem = memo(({ match }: RecentMatchItemProps) => {
         <div className="mx-4 text-center">
           <div className="font-bold text-2xl text-white">
             <MatchScore 
-              homeScore={match.home_score} 
-              awayScore={match.away_score} 
+              homeScore={match.homeScore} 
+              awayScore={match.awayScore} 
             />
           </div>
-          <div className="text-xs text-gray-400">
-            HT: {match.ht_home_score} - {match.ht_away_score}
+          <div className="text-xs text-gray-400 mt-1">
+            HT: {match.htHomeScore || 0} - {match.htAwayScore || 0}
           </div>
         </div>
         
         <Link 
-          to={`/teams/${match.away_team.toLowerCase()}`}
+          to={`/teams/${match.awayTeamId.toLowerCase()}`}
           className="flex-1 hover:text-blue-400 transition-colors"
         >
           <div className="font-medium text-white">{awayTeamName}</div>

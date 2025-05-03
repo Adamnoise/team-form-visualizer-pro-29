@@ -10,13 +10,14 @@ interface MatchCardProps {
 }
 
 const MatchCard = memo(({ match }: MatchCardProps) => {
-  const homeWin = match.home_score > match.away_score
-  const awayWin = match.home_score < match.away_score
-  const draw = match.home_score === match.away_score
+  // Mivel a Match típus változott, frissítenünk kell a property neveket
+  const homeWin = match.homeScore > match.awayScore
+  const awayWin = match.homeScore < match.awayScore
+  const draw = match.homeScore === match.awayScore
   
-  // Convert team names to Hungarian
-  const homeTeam = getHungarianTeamName(match.home_team)
-  const awayTeam = getHungarianTeamName(match.away_team)
+  // Csapatnevek konvertálása magyarra
+  const homeTeam = getHungarianTeamName(match.homeTeamId)
+  const awayTeam = getHungarianTeamName(match.awayTeamId)
 
   return (
     <div className="bg-black/30 rounded-lg border border-white/5 p-4 hover:bg-black/40 transition-colors">
@@ -32,10 +33,10 @@ const MatchCard = memo(({ match }: MatchCardProps) => {
 
         <div className="mx-4 px-4 py-2 bg-black/30 rounded-lg flex flex-col items-center">
           <div className="text-lg font-bold">
-            <MatchScore homeScore={match.home_score} awayScore={match.away_score} />
+            <MatchScore homeScore={match.homeScore} awayScore={match.awayScore} />
           </div>
           <div className="text-xs text-gray-500 mt-1">
-            HT: <MatchScore homeScore={match.ht_home_score} awayScore={match.ht_away_score} isHalfTime />
+            HT: <MatchScore homeScore={match.htHomeScore || 0} awayScore={match.htAwayScore || 0} isHalfTime />
           </div>
         </div>
 
@@ -44,7 +45,7 @@ const MatchCard = memo(({ match }: MatchCardProps) => {
 
       <div className="flex justify-between items-center mt-3">
         <div className="text-xs text-gray-500">{homeWin ? "Home Win" : awayWin ? "Away Win" : "Draw"}</div>
-        <div className="text-xs text-gray-500">Total Goals: {match.home_score + match.away_score}</div>
+        <div className="text-xs text-gray-500">Total Goals: {match.homeScore + match.awayScore}</div>
       </div>
     </div>
   )

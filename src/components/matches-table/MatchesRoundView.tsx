@@ -40,25 +40,25 @@ const MatchesRoundView = memo(({ matchesByRound }: MatchesRoundViewProps) => {
             <TableBody>
               {roundMatches.map((match, index) => (
                 <TableRow
-                  key={`${match.home_team}-${match.away_team}-${index}`}
+                  key={`${match.homeTeamId}-${match.awayTeamId}-${index}`}
                   className="border-b border-white/5 hover:bg-white/5"
                 >
                   <TableCell>{match.date}</TableCell>
                   <TableCell
-                    className={`font-medium text-white ${match.home_score > match.away_score ? "font-bold" : ""}`}
+                    className={`font-medium text-white ${match.homeScore > match.awayScore ? "font-bold" : ""}`}
                   >
-                    {getHungarianTeamName(match.home_team)}
+                    {getHungarianTeamName(match.homeTeamId)}
                   </TableCell>
                   <TableCell
-                    className={`font-medium text-white ${match.home_score < match.away_score ? "font-bold" : ""}`}
+                    className={`font-medium text-white ${match.homeScore < match.awayScore ? "font-bold" : ""}`}
                   >
-                    {getHungarianTeamName(match.away_team)}
+                    {getHungarianTeamName(match.awayTeamId)}
                   </TableCell>
                   <TableCell className="text-center">
-                    <MatchScore homeScore={match.ht_home_score} awayScore={match.ht_away_score} isHalfTime />
+                    <MatchScore homeScore={match.htHomeScore || 0} awayScore={match.htAwayScore || 0} isHalfTime />
                   </TableCell>
                   <TableCell className="text-center">
-                    <MatchScore homeScore={match.home_score} awayScore={match.away_score} />
+                    <MatchScore homeScore={match.homeScore} awayScore={match.awayScore} />
                   </TableCell>
                 </TableRow>
               ))}

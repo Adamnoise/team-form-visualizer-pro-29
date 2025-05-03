@@ -3,20 +3,30 @@ import { Link } from 'react-router-dom';
 import { Team } from '@/types';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { TEAMS } from '@/data/teamsData';
 
 interface TeamsListProps {
   filteredTeams: Team[];
 }
 
 const TeamsList = ({ filteredTeams }: TeamsListProps) => {
+  // Ha nincs megadva filteredTeams, akkor használjuk a TEAMS adatokat alapértelmezettként
+  const teamsToShow = filteredTeams.length > 0 ? filteredTeams : TEAMS.map(team => ({
+    ...team,
+    category: team.league || 'Premier League',
+    founded: '1900',
+    stadium: `${team.name} Stadium`,
+    coach: 'TBA'
+  }));
+
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-semibold">
-        Teams ({filteredTeams.length})
+        Teams ({teamsToShow.length})
       </h2>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {filteredTeams.map((team) => (
+        {teamsToShow.map((team) => (
           <Card key={team.id} className="overflow-hidden">
             <CardContent className="pt-6">
               <h3 className="text-lg font-medium">{team.name}</h3>
@@ -40,7 +50,7 @@ const TeamsList = ({ filteredTeams }: TeamsListProps) => {
           </Card>
         ))}
         
-        {filteredTeams.length === 0 && (
+        {teamsToShow.length === 0 && (
           <p className="col-span-full text-center text-muted-foreground py-8">
             No teams found matching your criteria.
           </p>

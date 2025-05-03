@@ -92,7 +92,7 @@ const TeamMatches = memo(({ matches, teamId, isLoading }: TeamMatchesProps) => {
                     <span className="text-gray-500">—</span>
                   )}
                 </div>
-                <div className="text-xs text-gray-500">{match.location || 'Venue TBD'}</div>
+                <div className="text-xs text-gray-500">{match.venue || 'Venue TBD'}</div>
               </div>
             </div>
           );

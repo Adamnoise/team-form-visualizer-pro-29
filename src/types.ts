@@ -20,8 +20,8 @@ export interface Match {
   awayScore: number;
   htHomeScore?: number;
   htAwayScore?: number;
-  venue?: string;
-  leagueId?: string;
+  venue?: string; // Changed from optional location to venue
+  leagueId?: string; // Changed from an optional competition property
   round?: string;
   // Added for backward compatibility
   home_team?: string;

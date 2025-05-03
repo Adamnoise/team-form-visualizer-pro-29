@@ -1,10 +1,12 @@
 
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { Card } from "@/components/ui/card";
 import { Team } from "@/data/teamsData";
 import { Match, TeamForm } from "@/types";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { format } from "date-fns";
+import TeamDisplay from "./TeamDisplay";
+import StatComparison from "./StatComparison";
+import MatchResultCard from "./MatchResultCard";
+import { useHeadToHeadStats } from "@/hooks/useHeadToHeadStats";
 
 interface HeadToHeadComparisonProps {
   team1?: Team;
@@ -14,169 +16,8 @@ interface HeadToHeadComparisonProps {
   isLoading?: boolean;
 }
 
-const StatComparison = memo(({ label, value1, value2 }: { label: string; value1: string | number; value2: string | number }) => {
-  const isValue1Better = Number(value1) > Number(value2);
-  const isValue2Better = Number(value2) > Number(value1);
-  const isEqual = value1 === value2;
-
-  return (
-    <div className="grid grid-cols-3 items-center py-3">
-      <div className={`text-center font-semibold ${isValue1Better ? "text-blue-600" : "text-gray-700"}`}>
-        {value1}
-      </div>
-      <div className="text-center text-sm text-gray-500">{label}</div>
-      <div className={`text-center font-semibold ${isValue2Better ? "text-blue-600" : "text-gray-700"}`}>
-        {value2}
-      </div>
-    </div>
-  );
-});
-
-StatComparison.displayName = "StatComparison";
-
-const MatchResultCard = memo(({ match, team1Id, team2Id }: { match: Match; team1Id: string; team2Id: string }) => {
-  const isTeam1Home = match.homeTeamId?.toLowerCase() === team1Id.toLowerCase();
-  const team1Score = isTeam1Home ? match.homeScore : match.awayScore;
-  const team2Score = isTeam1Home ? match.awayScore : match.homeScore;
-  
-  let resultClass = "bg-gray-100";
-  if (team1Score !== null && team2Score !== null) {
-    if (team1Score > team2Score) {
-      resultClass = "bg-blue-50 border-blue-200";
-    } else if (team1Score < team2Score) {
-      resultClass = "bg-red-50 border-red-200";
-    } else {
-      resultClass = "bg-amber-50 border-amber-200";
-    }
-  }
-  
-  return (
-    <div className={`p-4 rounded-lg border ${resultClass} mb-3`}>
-      <div className="text-xs text-gray-500 mb-2">
-        {match.date ? format(new Date(match.date), 'MMMM d, yyyy') : 'Date TBD'}
-        {match.location && ` • ${match.location}`}
-      </div>
-      
-      <div className="flex justify-between items-center">
-        <div className="text-right flex-1">
-          <div className="font-semibold">{isTeam1Home ? 'Home' : 'Away'}</div>
-        </div>
-        
-        <div className="mx-3 text-xl font-bold">
-          {team1Score !== null && team2Score !== null
-            ? `${team1Score} - ${team2Score}`
-            : "vs"}
-        </div>
-        
-        <div className="text-left flex-1">
-          <div className="font-semibold">{!isTeam1Home ? 'Home' : 'Away'}</div>
-        </div>
-      </div>
-      
-      {match.competition && (
-        <div className="text-xs text-gray-500 mt-2 text-center">{match.competition}</div>
-      )}
-    </div>
-  );
-});
-
-MatchResultCard.displayName = "MatchResultCard";
-
-const TeamDisplay = memo(({ team, stats }: { team?: Team; stats?: TeamForm }) => {
-  if (!team) return null;
-  
-  return (
-    <div className="flex flex-col items-center">
-      <Avatar className="w-16 h-16 mb-3">
-        {team.logoUrl ? (
-          <AvatarImage src={team.logoUrl} alt={team.name} />
-        ) : (
-          <AvatarFallback className="text-2xl bg-blue-50 text-blue-700">
-            {team.name.charAt(0)}
-          </AvatarFallback>
-        )}
-      </Avatar>
-      <div className="text-xl font-bold text-center mb-1">{team.name}</div>
-      {stats && (
-        <div className="text-sm text-gray-500">{stats.position || '-'}. place</div>
-      )}
-    </div>
-  );
-});
-
-TeamDisplay.displayName = "TeamDisplay";
-
 const HeadToHeadComparison = memo(({ team1, team2, matches, standings, isLoading = false }: HeadToHeadComparisonProps) => {
-  const h2hMatches = useMemo(() => {
-    if (!team1 || !team2) return [];
-    
-    return matches.filter(match => 
-      (match.homeTeamId?.toLowerCase() === team1.id.toLowerCase() && 
-       match.awayTeamId?.toLowerCase() === team2.id.toLowerCase()) ||
-      (match.homeTeamId?.toLowerCase() === team2.id.toLowerCase() && 
-       match.awayTeamId?.toLowerCase() === team1.id.toLowerCase())
-    ).sort((a, b) => {
-      try {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        
-        if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
-          return 0;
-        }
-        
-        return dateB.getTime() - dateA.getTime();
-      } catch (error) {
-        return 0;
-      }
-    });
-  }, [team1, team2, matches]);
-  
-  const team1Stats = useMemo(() => {
-    if (!team1) return null;
-    return standings.find(stats => stats.team.toLowerCase() === team1.id.toLowerCase());
-  }, [team1, standings]);
-  
-  const team2Stats = useMemo(() => {
-    if (!team2) return null;
-    return standings.find(stats => stats.team.toLowerCase() === team2.id.toLowerCase());
-  }, [team2, standings]);
-  
-  const h2hStats = useMemo(() => {
-    if (!team1 || !team2 || h2hMatches.length === 0) return null;
-    
-    let team1Wins = 0;
-    let team2Wins = 0;
-    let draws = 0;
-    let team1Goals = 0;
-    let team2Goals = 0;
-    
-    h2hMatches.forEach(match => {
-      if (match.homeTeamId?.toLowerCase() === team1.id.toLowerCase()) {
-        team1Goals += match.homeScore || 0;
-        team2Goals += match.awayScore || 0;
-        
-        if ((match.homeScore || 0) > (match.awayScore || 0)) team1Wins++;
-        else if ((match.homeScore || 0) < (match.awayScore || 0)) team2Wins++;
-        else draws++;
-      } else {
-        team1Goals += match.awayScore || 0;
-        team2Goals += match.homeScore || 0;
-        
-        if ((match.awayScore || 0) > (match.homeScore || 0)) team1Wins++;
-        else if ((match.awayScore || 0) < (match.homeScore || 0)) team2Wins++;
-        else draws++;
-      }
-    });
-    
-    return {
-      matchesCount: h2hMatches.length,
-      team1Wins,
-      team2Wins,
-      draws,
-      team1Goals,
-      team2Goals
-    };
-  }, [team1, team2, h2hMatches]);
+  const { h2hMatches, team1Stats, team2Stats, h2hStats } = useHeadToHeadStats(team1, team2, matches, standings);
   
   if (isLoading) {
     return (

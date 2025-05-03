@@ -7,7 +7,7 @@ import TeamStats from "@/components/team-page/TeamStats";
 import TeamMatches from "@/components/team-page/TeamMatches";
 import { TEAMS, findTeamByName } from "@/data/teamsData";
 import { mockMatches } from "@/data/mockData";
-import { calculateStandings } from "@/utils/calculations";
+import { calculateStandings, calculateTeamForms } from "@/utils/calculations";
 import { TeamForm } from "@/types";
 
 export default function TeamPage() {
@@ -16,9 +16,9 @@ export default function TeamPage() {
   
   const team = TEAMS.find(t => t.id.toLowerCase() === teamId?.toLowerCase());
   const matches = mockMatches;
-  const standings = calculateStandings(matches);
+  const teamForms = calculateTeamForms(matches);
   
-  const teamStats = standings.find(
+  const teamStats = teamForms.find(
     stats => stats.team.toLowerCase() === teamId?.toLowerCase()
   );
 

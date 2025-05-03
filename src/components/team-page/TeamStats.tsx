@@ -58,7 +58,12 @@ const TeamStats = memo(({ stats, isLoading }: TeamStatsProps) => {
   }
 
   // Calculate win rate
-  const formArray = Array.isArray(stats.form) ? stats.form : (typeof stats.form === "string" ? stats.form.split("") : []);
+  const formArray = Array.isArray(stats.form) 
+    ? stats.form 
+    : (typeof stats.form === "string" && stats.form 
+        ? stats.form.split("") 
+        : []);
+  
   const winCount = formArray.filter(result => result === "W").length;
   const drawCount = formArray.filter(result => result === "D").length;
   const lossCount = formArray.filter(result => result === "L").length;

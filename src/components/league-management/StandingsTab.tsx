@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
-import { Team, Match } from '../../types';
-import { getHungarianTeamName } from '../../data/teamsData';
+import { Team, Match } from '@/types';
+import { getHungarianTeamName } from '@/data/teamsData';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface StandingsTabProps {
   teams: Team[];
@@ -49,7 +49,7 @@ const StandingsTab: React.FC<StandingsTabProps> = ({ teams, matches, selectedLea
 
     return {
       id: team.id,
-      name: getHungarianTeamName(team.name),
+      name: getHungarianTeamName(team.id),
       played: teamMatches.length,
       wins,
       draws,
@@ -74,52 +74,50 @@ const StandingsTab: React.FC<StandingsTabProps> = ({ teams, matches, selectedLea
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>
-        League Table
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="league standings table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Pos</TableCell>
-              <TableCell>Team</TableCell>
-              <TableCell align="right">P</TableCell>
-              <TableCell align="right">W</TableCell>
-              <TableCell align="right">D</TableCell>
-              <TableCell align="right">L</TableCell>
-              <TableCell align="right">GF</TableCell>
-              <TableCell align="right">GA</TableCell>
-              <TableCell align="right">GD</TableCell>
-              <TableCell align="right">Pts</TableCell>
+      <h2 className="text-xl font-semibold mb-4">League Table</h2>
+      <div className="overflow-x-auto rounded-lg bg-black/20 border border-white/5">
+        <Table>
+          <TableHeader className="bg-black/40">
+            <TableRow className="border-b border-white/5">
+              <TableHead>Pos</TableHead>
+              <TableHead>Team</TableHead>
+              <TableHead className="text-right">P</TableHead>
+              <TableHead className="text-right">W</TableHead>
+              <TableHead className="text-right">D</TableHead>
+              <TableHead className="text-right">L</TableHead>
+              <TableHead className="text-right">GF</TableHead>
+              <TableHead className="text-right">GA</TableHead>
+              <TableHead className="text-right">GD</TableHead>
+              <TableHead className="text-right">Pts</TableHead>
             </TableRow>
-          </TableHead>
+          </TableHeader>
           <TableBody>
             {teamStandings.map((team, index) => (
               <TableRow
                 key={team.id}
-                sx={{
-                  '&:nth-of-type(odd)': { backgroundColor: 'action.hover' },
-                  ...(index < 4 && { backgroundColor: 'rgba(0, 230, 118, 0.1)' }),
-                  ...(index >= teamStandings.length - 3 && { backgroundColor: 'rgba(255, 82, 82, 0.1)' }),
-                }}
+                className={`border-b border-white/5 ${
+                  index < 4 
+                    ? "bg-emerald-900/10" 
+                    : index >= teamStandings.length - 3 
+                    ? "bg-red-900/10"
+                    : ""
+                }`}
               >
-                <TableCell component="th" scope="row">
-                  {index + 1}
-                </TableCell>
-                <TableCell>{team.name}</TableCell>
-                <TableCell align="right">{team.played}</TableCell>
-                <TableCell align="right">{team.wins}</TableCell>
-                <TableCell align="right">{team.draws}</TableCell>
-                <TableCell align="right">{team.losses}</TableCell>
-                <TableCell align="right">{team.goalsFor}</TableCell>
-                <TableCell align="right">{team.goalsAgainst}</TableCell>
-                <TableCell align="right">{team.goalDifference}</TableCell>
-                <TableCell align="right"><strong>{team.points}</strong></TableCell>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell className="font-medium">{team.name}</TableCell>
+                <TableCell className="text-right">{team.played}</TableCell>
+                <TableCell className="text-right">{team.wins}</TableCell>
+                <TableCell className="text-right">{team.draws}</TableCell>
+                <TableCell className="text-right">{team.losses}</TableCell>
+                <TableCell className="text-right">{team.goalsFor}</TableCell>
+                <TableCell className="text-right">{team.goalsAgainst}</TableCell>
+                <TableCell className="text-right">{team.goalDifference}</TableCell>
+                <TableCell className="text-right font-bold">{team.points}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </div>
     </>
   );
 };

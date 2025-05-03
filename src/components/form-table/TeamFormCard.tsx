@@ -8,7 +8,11 @@ interface TeamFormCardProps {
 }
 
 export const TeamFormCard = ({ team }: TeamFormCardProps) => {
-  const formArray = Array.isArray(team.form) ? team.form : typeof team.form === "string" ? team.form.split("") : [];
+  const formArray = Array.isArray(team.form) 
+    ? team.form 
+    : typeof team.form === "string" && team.form 
+      ? team.form.split("") 
+      : [];
 
   const winCount = formArray.filter((result) => result === "W").length;
   const drawCount = formArray.filter((result) => result === "D").length;

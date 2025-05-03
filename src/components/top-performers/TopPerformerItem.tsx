@@ -21,7 +21,9 @@ const TopPerformerItem = ({ team, index }: TopPerformerItemProps) => {
     // Kezeli mindkét típust (string és tömb)
     const formItems = Array.isArray(team.form) 
       ? team.form.slice(0, 5) 
-      : team.form.substring(0, 5).split("");
+      : typeof team.form === "string" && team.form
+        ? team.form.substring(0, 5).split("")
+        : [];
     
     return formItems.map((result, i) => (
       <span

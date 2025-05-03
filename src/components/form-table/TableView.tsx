@@ -112,7 +112,7 @@ export const TableView = ({ teams, requestSort, sortConfig }: TableViewProps) =>
                   <div className="flex justify-center gap-1.5">
                     {Array.isArray(team.form)
                       ? team.form.map((result, i) => <FormResult key={i} result={result} />)
-                      : typeof team.form === "string"
+                      : typeof team.form === "string" && team.form
                       ? team.form.split("").map((result, i) => <FormResult key={i} result={result} />)
                       : null}
                   </div>

@@ -23,12 +23,13 @@ export interface Match {
   venue?: string;
   leagueId?: string;
   round?: string;
-  home_team?: string; // Added for backward compatibility
-  away_team?: string; // Added for backward compatibility
-  home_score?: number; // Added for backward compatibility
-  away_score?: number; // Added for backward compatibility
-  ht_home_score?: number; // Added for backward compatibility
-  ht_away_score?: number; // Added for backward compatibility
+  // Added for backward compatibility
+  home_team?: string;
+  away_team?: string;
+  home_score?: number;
+  away_score?: number;
+  ht_home_score?: number;
+  ht_away_score?: number;
 }
 
 export interface Player {
@@ -74,7 +75,7 @@ export interface TeamForm {
   goalsAgainst: number;
   goalDifference?: number; // Made optional to accommodate mock data
   points: number;
-  form?: string[];
+  form?: string[] | string; // Support both array and string formats
   position?: number;
   lastPosition?: number;
 }
@@ -82,7 +83,7 @@ export interface TeamForm {
 export interface StandingsEntry {
   teamId: string;
   teamName: string;
-  team?: string;
+  team: string; // Changed from optional to required to match TeamForm
   played: number;
   won: number;
   drawn: number;
@@ -93,6 +94,6 @@ export interface StandingsEntry {
   points: number;
   position: number;
   previousPosition?: number;
-  form?: string[];
+  form?: string[] | string; // Support both array and string formats
   zone?: string;
 }

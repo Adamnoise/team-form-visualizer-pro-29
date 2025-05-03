@@ -1,14 +1,14 @@
 
-import Papa from "papaparse"
-import type { Match } from "@/types"
-import { toast } from "sonner"
-import { getHungarianTeamName } from "@/data/teamsData"
+import Papa from "papaparse";
+import type { Match } from "@/types";
+import { toast } from "sonner";
+import { getHungarianTeamName } from "@/data/teamsData";
 
 export function parseCSV(
   file: File, 
   onSuccess: (matches: Match[]) => void
 ): void {
-  console.log("Starting CSV upload. File name:", file.name)
+  console.log("Starting CSV upload. File name:", file.name);
 
   // Enhanced PapaParse configuration to handle the specific CSV format
   Papa.parse(file, {
@@ -71,12 +71,19 @@ export function parseCSV(
               // Safely convert values - the array indices match the CSV columns
               const match: Match = {
                 date: dateStr,
+                homeTeamId: String(row[1] || ''),
+                awayTeamId: String(row[2] || ''),
+                htHomeScore: parseInt(String(row[3]), 10) || 0,
+                htAwayScore: parseInt(String(row[4]), 10) || 0,
+                homeScore: parseInt(String(row[5]), 10) || 0,
+                awayScore: parseInt(String(row[6]), 10) || 0,
+                // For backward compatibility
                 home_team: String(row[1] || ''),
                 away_team: String(row[2] || ''),
-                ht_home_score: parseInt(String(row[3]), 10) || 0,
-                ht_away_score: parseInt(String(row[4]), 10) || 0,
                 home_score: parseInt(String(row[5]), 10) || 0,
                 away_score: parseInt(String(row[6]), 10) || 0,
+                ht_home_score: parseInt(String(row[3]), 10) || 0,
+                ht_away_score: parseInt(String(row[4]), 10) || 0
               };
               
               // Add round if it exists (for future compatibility)
@@ -91,7 +98,7 @@ export function parseCSV(
           
           // Filter out any incomplete entries
           const validMatches = parsedData.filter(
-            (match) => match.home_team && match.away_team
+            (match) => match.homeTeamId && match.awayTeamId
           );
           
           console.log("Valid matches count:", validMatches.length);

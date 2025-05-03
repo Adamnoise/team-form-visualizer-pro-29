@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Typography, Grid, Card, CardContent, Box } from '@mui/material';
-import { Team, Match } from '../../types';
-import { getHungarianTeamName } from '../../data/teamsData';
+import { Match, Team } from '@/types';
+import { Card, CardContent } from '@/components/ui/card';
+import { getHungarianTeamName } from '@/data/teamsData';
 
 interface RecentMatchesSectionProps {
   matches: Match[];
@@ -15,54 +15,38 @@ const RecentMatchesSection: React.FC<RecentMatchesSectionProps> = ({ matches, te
   ).slice(0, 4);
 
   return (
-    <Grid item xs={12}>
-      <Typography variant="h5" gutterBottom>
-        Recent Matches
-      </Typography>
-      <Grid container spacing={2}>
-        {sortedMatches.map((match) => {
+    <div className="w-full">
+      <h2 className="text-xl font-semibold mb-4">Recent Matches</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {sortedMatches.map((match, index) => {
           const homeTeam = teams.find((t) => t.id === match.homeTeamId);
           const awayTeam = teams.find((t) => t.id === match.awayTeamId);
           return (
-            <Grid item xs={12} sm={6} md={3} key={match.id}>
-              <Card>
-                <CardContent>
-                  <Typography
-                    color="textSecondary"
-                    gutterBottom
-                    variant="body2"
-                  >
-                    {new Date(match.date).toLocaleDateString()}
-                  </Typography>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Typography variant="body1">
-                      {homeTeam ? getHungarianTeamName(homeTeam.name) : 'Unknown'}
-                    </Typography>
-                    <Typography variant="h6">
-                      {match.homeScore} - {match.awayScore}
-                    </Typography>
-                    <Typography variant="body1">
-                      {awayTeam ? getHungarianTeamName(awayTeam.name) : 'Unknown'}
-                    </Typography>
-                  </Box>
-                  <Typography
-                    color="textSecondary"
-                    variant="body2"
-                    mt={1}
-                  >
-                    Stadium: {match.venue || homeTeam?.stadium || 'N/A'}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+            <Card key={match.id || index} className="bg-black/30 border-white/5">
+              <CardContent className="p-4">
+                <div className="text-sm text-gray-400 mb-2">
+                  {new Date(match.date).toLocaleDateString()}
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-white">
+                    {homeTeam ? getHungarianTeamName(homeTeam.id) : 'Unknown'}
+                  </div>
+                  <div className="text-lg font-semibold mx-2">
+                    {match.homeScore} - {match.awayScore}
+                  </div>
+                  <div className="text-sm text-white">
+                    {awayTeam ? getHungarianTeamName(awayTeam.id) : 'Unknown'}
+                  </div>
+                </div>
+                <div className="text-xs text-gray-400 mt-2">
+                  Stadium: {match.venue || homeTeam?.stadium || 'N/A'}
+                </div>
+              </CardContent>
+            </Card>
           );
         })}
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 };
 

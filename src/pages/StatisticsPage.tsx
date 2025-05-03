@@ -4,12 +4,14 @@ import StatisticsOverview from "@/components/statistics/StatisticsOverview";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { mockMatches } from "@/data/mockData";
-import { calculateStandings } from "@/utils/calculations";
+import { calculateStandings, calculateTeamForms } from "@/utils/calculations";
 import { useMatchesByRound } from "@/hooks/useMatchesByRound";
+import { TeamForm } from "@/types";
 
 export default function StatisticsPage() {
   const matches = mockMatches;
   const standings = calculateStandings(matches);
+  const teamForms = calculateTeamForms(matches); // Use teamForms instead of standings
   const matchesByRound = useMatchesByRound(matches);
   const rounds = Object.keys(matchesByRound).sort((a, b) => Number(a) - Number(b));
 
@@ -36,7 +38,7 @@ export default function StatisticsPage() {
             <h1 className="text-3xl font-bold text-white mb-6">League Statistics</h1>
             
             <div className="grid grid-cols-1 gap-6">
-              <StatisticsOverview matches={matches} standings={standings} />
+              <StatisticsOverview matches={matches} standings={teamForms} />
               
               <Card className="bg-black/20 border-white/5">
                 <CardHeader className="pb-2">

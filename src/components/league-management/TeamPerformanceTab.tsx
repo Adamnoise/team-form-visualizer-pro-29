@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Box } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Team, Match } from '../../types';
-import { getHungarianTeamName } from '../../data/teamsData';
+import { Team, Match } from '@/types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getHungarianTeamName } from '@/data/teamsData';
 
 interface TeamPerformanceTabProps {
   teams: Team[];
@@ -50,7 +50,7 @@ const TeamPerformanceTab: React.FC<TeamPerformanceTabProps> = ({ teams, matches,
 
     return {
       id: team.id,
-      name: getHungarianTeamName(team.name),
+      name: getHungarianTeamName(team.id),
       played: teamMatches.length,
       wins,
       draws,
@@ -62,91 +62,57 @@ const TeamPerformanceTab: React.FC<TeamPerformanceTabProps> = ({ teams, matches,
     };
   }).sort((a, b) => b.points - a.points);
 
-  const formPerformance = filteredTeams.map(team => {
-    const teamMatches = filteredMatches
-      .filter(match => match.homeTeamId === team.id || match.awayTeamId === team.id)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    
-    const monthlyPoints = teamMatches.reduce((acc, match) => {
-      const matchDate = new Date(match.date);
-      const monthYear = `${matchDate.getMonth() + 1}/${matchDate.getFullYear()}`;
-      
-      let points = 0;
-      if (match.homeTeamId === team.id) {
-        if (match.homeScore > match.awayScore) points = 3;
-        else if (match.homeScore === match.awayScore) points = 1;
-      } else {
-        if (match.awayScore > match.homeScore) points = 3;
-        else if (match.homeScore === match.awayScore) points = 1;
-      }
-
-      if (!acc[monthYear]) {
-        acc[monthYear] = { month: monthYear, points: 0 };
-      }
-      acc[monthYear].points += points;
-      return acc;
-    }, {} as Record<string, { month: string; points: number }>);
-
-    return {
-      name: getHungarianTeamName(team.name),
-      data: Object.values(monthlyPoints),
-    };
-  });
-
   return (
     <>
-      <Typography variant="h5" gutterBottom>
-        Team Performance
-      </Typography>
-      <Box height={400}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" type="category" allowDuplicatedCategory={false} />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            {formPerformance.map((team, index) => (
-              <Line
-                key={team.name}
-                data={team.data}
-                type="monotone"
-                dataKey="points"
-                name={team.name}
-                stroke={`hsl(${index * 30}, 70%, 50%)`}
-                strokeWidth={2}
-              />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
-      </Box>
+      <h2 className="text-xl font-semibold mb-4">Team Performance</h2>
+      
+      <div className="mb-8">
+        <Card className="bg-black/30 border-white/5">
+          <CardHeader>
+            <CardTitle>Team Performance Chart</CardTitle>
+          </CardHeader>
+          <CardContent className="h-80">
+            <div className="flex h-full items-end justify-between gap-2">
+              {teamStandings.slice(0, 8).map((team, index) => (
+                <div key={team.id} className="flex flex-col items-center">
+                  <div 
+                    className="w-12 bg-blue-500/70 hover:bg-blue-500 transition-colors rounded-t-sm"
+                    style={{ height: `${(team.points / 100) * 80}%` }}
+                  >
+                  </div>
+                  <div className="mt-2 text-xs text-center text-gray-400 max-w-16 truncate">
+                    {team.name}
+                  </div>
+                  <div className="text-sm font-medium text-white">
+                    {team.points}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-      <Typography variant="h6" gutterBottom mt={4}>
-        Top Teams Comparison
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="team comparison table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Team</TableCell>
-              <TableCell align="right">Possession (%)</TableCell>
-              <TableCell align="right">Pass Accuracy (%)</TableCell>
-              <TableCell align="right">Shots on Target</TableCell>
-              <TableCell align="right">Clean Sheets</TableCell>
+      <h3 className="text-lg font-medium mb-4">Top Teams Comparison</h3>
+      <div className="overflow-x-auto rounded-lg bg-black/20 border border-white/5">
+        <Table>
+          <TableHeader className="bg-black/40">
+            <TableRow className="border-b border-white/5">
+              <TableHead>Team</TableHead>
+              <TableHead className="text-right">Possession (%)</TableHead>
+              <TableHead className="text-right">Pass Accuracy (%)</TableHead>
+              <TableHead className="text-right">Shots on Target</TableHead>
+              <TableHead className="text-right">Clean Sheets</TableHead>
             </TableRow>
-          </TableHead>
+          </TableHeader>
           <TableBody>
             {teamStandings.slice(0, 5).map((team) => (
-              <TableRow key={team.id}>
-                <TableCell component="th" scope="row">
-                  {team.name}
-                </TableCell>
-                <TableCell align="right">{Math.round(45 + Math.random() * 20)}</TableCell>
-                <TableCell align="right">{Math.round(70 + Math.random() * 20)}</TableCell>
-                <TableCell align="right">{Math.round(team.goalsFor * 2.5)}</TableCell>
-                <TableCell align="right">
+              <TableRow key={team.id} className="border-b border-white/5">
+                <TableCell className="font-medium">{team.name}</TableCell>
+                <TableCell className="text-right">{Math.round(45 + Math.random() * 20)}</TableCell>
+                <TableCell className="text-right">{Math.round(70 + Math.random() * 20)}</TableCell>
+                <TableCell className="text-right">{Math.round(team.goalsFor * 2.5)}</TableCell>
+                <TableCell className="text-right">
                   {filteredMatches.filter(match => 
                     (match.homeTeamId === team.id && match.awayScore === 0) || 
                     (match.awayTeamId === team.id && match.homeScore === 0)
@@ -156,7 +122,7 @@ const TeamPerformanceTab: React.FC<TeamPerformanceTabProps> = ({ teams, matches,
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </div>
     </>
   );
 };

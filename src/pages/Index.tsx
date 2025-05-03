@@ -3,7 +3,14 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { FormTable } from "@/components/FormTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, Trophy } from "lucide-react";
+import { 
+  BarChart3, 
+  Trophy, 
+  CircleCheckBig, 
+  Award, 
+  ChartNoAxesColumnIncreasing, 
+  Zap 
+} from "lucide-react";
 import TopPerformersCard from "@/components/TopPerformersCard";
 import { mockTeamForms, mockMatches } from "@/data/mockData";
 import { Match } from "@/types";
@@ -34,25 +41,40 @@ const Index = () => {
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-blue-500" />
-                <CardTitle className="text-white">Magyar Bajnokság Áttekintés</CardTitle>
+                <CardTitle className="text-white">Liga Áttekintés</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-black/30 rounded-lg p-4 border border-white/5">
-                  <div className="text-sm text-gray-400">Csapatok</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="relative rounded-xl bg-gradient-to-br p-4 border backdrop-blur-sm animate-scale-in from-blue-600/20 to-blue-700/10 border-blue-500/20 animate-delay-100">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-medium text-white/70">Csapatok</span>
+                    <CircleCheckBig className="h-4 w-4 text-blue-400" />
+                  </div>
                   <div className="text-2xl font-bold text-white">{teamForms.length}</div>
                 </div>
-                <div className="bg-black/30 rounded-lg p-4 border border-white/5">
-                  <div className="text-sm text-gray-400">Lejátszott meccsek</div>
+                
+                <div className="relative rounded-xl bg-gradient-to-br p-4 border backdrop-blur-sm animate-scale-in from-green-600/20 to-green-700/10 border-green-500/20 animate-delay-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-medium text-white/70">Lejátszott meccsek</span>
+                    <Award className="h-4 w-4 text-green-400" />
+                  </div>
                   <div className="text-2xl font-bold text-white">{matches.length}</div>
                 </div>
-                <div className="bg-black/30 rounded-lg p-4 border border-white/5">
-                  <div className="text-sm text-gray-400">Szerzett gólok</div>
+                
+                <div className="relative rounded-xl bg-gradient-to-br p-4 border backdrop-blur-sm animate-scale-in from-purple-600/20 to-purple-700/10 border-purple-500/20 animate-delay-300">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-medium text-white/70">Szerzett gólok</span>
+                    <ChartNoAxesColumnIncreasing className="h-4 w-4 text-purple-400" />
+                  </div>
                   <div className="text-2xl font-bold text-white">{totalGoals}</div>
                 </div>
-                <div className="bg-black/30 rounded-lg p-4 border border-white/5">
-                  <div className="text-sm text-gray-400">Átlag gól/meccs</div>
+                
+                <div className="relative rounded-xl bg-gradient-to-br p-4 border backdrop-blur-sm animate-scale-in from-amber-600/20 to-amber-700/10 border-amber-500/20 animate-delay-400">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-medium text-white/70">Átlag gól/meccs</span>
+                    <Zap className="h-4 w-4 text-amber-400" />
+                  </div>
                   <div className="text-2xl font-bold text-white">{averageGoalsPerMatch}</div>
                 </div>
               </div>

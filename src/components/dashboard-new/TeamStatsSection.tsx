@@ -1,7 +1,6 @@
 
 import { Team, Player } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getHungarianTeamName } from '@/data/teamsData';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 interface TeamStatsSectionProps {
@@ -73,7 +72,7 @@ const TeamStatsSection = ({ teams, topScorers, teamStats }: TeamStatsSectionProp
               <div key={team.name} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">{index + 1}.</span>
-                  <span>{getHungarianTeamName(team.name)}</span>
+                  <span>{team.name}</span>
                 </div>
                 <span className="font-medium">{team.points} pts</span>
               </div>
@@ -95,7 +94,7 @@ const TeamStatsSection = ({ teams, topScorers, teamStats }: TeamStatsSectionProp
                   <span className="text-muted-foreground mr-2">{index + 1}.</span>
                   <span>{player.name} </span>
                   <span className="text-muted-foreground">
-                    ({getHungarianTeamName(teams.find((team) => team.id === player.teamId)?.name || 'Unknown Team')})
+                    ({teams.find((team) => team.id === player.teamId)?.name || 'Unknown Team'})
                   </span>
                 </div>
                 <span className="font-medium">{player.goals} goals</span>

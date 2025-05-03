@@ -4,10 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const FeaturedTeams = () => {
   const featuredTeams = [
-    { name: 'London Ágyúk', league: 'Premier League', stadium: 'Emirates Stadium', logo: '/placeholder.svg' },
-    { name: 'Vörös Ördögök', league: 'Premier League', stadium: 'Old Trafford', logo: '/placeholder.svg' },
-    { name: 'Manchester Kék', league: 'Premier League', stadium: 'Etihad Stadium', logo: '/placeholder.svg' },
-    { name: 'Aston Oroszlán', league: 'Premier League', stadium: 'Villa Park', logo: '/placeholder.svg' },
+    { name: 'Team 1', league: 'Premier League', stadium: 'Stadium 1', logo: '/placeholder.svg' },
+    { name: 'Team 2', league: 'Premier League', stadium: 'Stadium 2', logo: '/placeholder.svg' },
+    { name: 'Team 3', league: 'Premier League', stadium: 'Stadium 3', logo: '/placeholder.svg' },
+    { name: 'Team 4', league: 'Premier League', stadium: 'Stadium 4', logo: '/placeholder.svg' },
   ];
 
   return (

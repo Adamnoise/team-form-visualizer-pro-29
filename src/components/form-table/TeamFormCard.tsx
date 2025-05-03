@@ -2,7 +2,6 @@
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent } from "@/components/ui/card";
 import type { TeamForm } from "@/types";
-import { getHungarianTeamName } from "@/data/teamsData";
 
 interface TeamFormCardProps {
   team: TeamForm;
@@ -19,9 +18,6 @@ export const TeamFormCard = ({ team }: TeamFormCardProps) => {
   const winPercentage = totalMatches > 0 ? (winCount / totalMatches) * 100 : 0;
   const drawPercentage = totalMatches > 0 ? (drawCount / totalMatches) * 100 : 0;
   const lossPercentage = totalMatches > 0 ? (lossCount / totalMatches) * 100 : 0;
-  
-  // Ensure we use the Hungarian team name
-  const teamName = getHungarianTeamName(team.team);
 
   return (
     <Card className="bg-black/30 border-white/5 overflow-hidden">
@@ -38,7 +34,7 @@ export const TeamFormCard = ({ team }: TeamFormCardProps) => {
             <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">
               {team.position}
             </div>
-            <h3 className="font-bold text-white">{teamName}</h3>
+            <h3 className="font-bold text-white">{team.team}</h3>
           </div>
           <div className="text-2xl font-bold text-white">{team.points}</div>
         </div>

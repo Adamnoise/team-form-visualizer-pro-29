@@ -12,10 +12,10 @@ const FeaturedTeams: React.FC = () => {
         <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
-              <Typography variant="h6">London Ágyúk</Typography>
+              <Typography variant="h6">Team 1</Typography>
               <Typography color="textSecondary">Premier League</Typography>
               <Typography variant="body2">
-                Stadium: Emirates Stadium
+                Stadium: Stadium 1
               </Typography>
             </CardContent>
           </Card>
@@ -23,27 +23,27 @@ const FeaturedTeams: React.FC = () => {
         <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
-              <Typography variant="h6">Vörös Ördögök</Typography>
+              <Typography variant="h6">Team 2</Typography>
               <Typography color="textSecondary">Premier League</Typography>
-              <Typography variant="body2">Stadium: Old Trafford</Typography>
+              <Typography variant="body2">Stadium: Stadium 2</Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
-              <Typography variant="h6">Manchester Kék</Typography>
+              <Typography variant="h6">Team 3</Typography>
               <Typography color="textSecondary">Premier League</Typography>
-              <Typography variant="body2">Stadium: Etihad Stadium</Typography>
+              <Typography variant="body2">Stadium: Stadium 3</Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
-              <Typography variant="h6">Aston Oroszlán</Typography>
+              <Typography variant="h6">Team 4</Typography>
               <Typography color="textSecondary">Premier League</Typography>
-              <Typography variant="body2">Stadium: Villa Park</Typography>
+              <Typography variant="body2">Stadium: Stadium 4</Typography>
             </CardContent>
           </Card>
         </Grid>

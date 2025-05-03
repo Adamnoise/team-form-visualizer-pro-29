@@ -4,22 +4,20 @@ import StatisticsOverview from "@/components/statistics/StatisticsOverview";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { mockMatches } from "@/data/mockData";
-import { calculateStandings, calculateTeamForms } from "@/utils/calculations";
+import { calculateTeamForms } from "@/utils/calculations";
 import { useMatchesByRound } from "@/hooks/useMatchesByRound";
-import { TeamForm } from "@/types";
 
 export default function StatisticsPage() {
   const matches = mockMatches;
-  const standings = calculateStandings(matches);
-  const teamForms = calculateTeamForms(matches); // Use teamForms instead of standings
+  const teamForms = calculateTeamForms(matches);
   const matchesByRound = useMatchesByRound(matches);
   const rounds = Object.keys(matchesByRound).sort((a, b) => Number(a) - Number(b));
 
-  // Calculate goals per round
+  // Calculate goals per round with null checks
   const goalsPerRound = rounds.map(round => {
     const roundMatches = matchesByRound[round] || [];
     const goals = roundMatches.reduce(
-      (sum, match) => sum + match.homeScore + match.awayScore, 
+      (sum, match) => sum + (match.homeScore || 0) + (match.awayScore || 0), 
       0
     );
     return { round, goals };

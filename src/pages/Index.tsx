@@ -13,6 +13,17 @@ const Index = () => {
   const [teamForms] = useState(mockTeamForms);
   const [matches] = useState<Match[]>(mockMatches);
   
+  // Calculate totals with null checks
+  const totalGoals = matches.reduce((sum, match) => {
+    const homeScore = match.homeScore || 0;
+    const awayScore = match.awayScore || 0;
+    return sum + homeScore + awayScore;
+  }, 0);
+  
+  const averageGoalsPerMatch = matches.length > 0 
+    ? (totalGoals / matches.length).toFixed(2) 
+    : '0.00';
+  
   return (
     <div className="min-h-screen bg-[#101820] text-white">
       <Header currentSeason="2023-2024" />
@@ -38,17 +49,11 @@ const Index = () => {
                 </div>
                 <div className="bg-black/30 rounded-lg p-4 border border-white/5">
                   <div className="text-sm text-gray-400">Szerzett gólok</div>
-                  <div className="text-2xl font-bold text-white">
-                    {matches.reduce((sum, match) => sum + match.homeScore + match.awayScore, 0)}
-                  </div>
+                  <div className="text-2xl font-bold text-white">{totalGoals}</div>
                 </div>
                 <div className="bg-black/30 rounded-lg p-4 border border-white/5">
                   <div className="text-sm text-gray-400">Átlag gól/meccs</div>
-                  <div className="text-2xl font-bold text-white">
-                    {matches.length > 0 
-                      ? (matches.reduce((sum, match) => sum + match.homeScore + match.awayScore, 0) / matches.length).toFixed(2) 
-                      : '0.00'}
-                  </div>
+                  <div className="text-2xl font-bold text-white">{averageGoalsPerMatch}</div>
                 </div>
               </div>
             </CardContent>

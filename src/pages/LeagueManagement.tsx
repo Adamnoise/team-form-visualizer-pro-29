@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect, useCallback } from "react";
@@ -9,6 +10,7 @@ import { calculateStandings } from "@/utils/calculations";
 import type { LeagueData, Match } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 import { mockMatches } from "@/data/mockData";
+import { getHungarianTeamName } from "@/data/teamsData";
 
 interface AppState {
   selectedLeagueId: string | null;
@@ -76,9 +78,15 @@ export default function LeagueManagement() {
                 ? {
                     ...league,
                     status: "Completed",
-                    winner: currentStandings[0]?.team ?? "-",
-                    secondPlace: currentStandings[1]?.team ?? "-",
-                    thirdPlace: currentStandings[2]?.team ?? "-",
+                    winner: currentStandings[0]?.team 
+                      ? getHungarianTeamName(currentStandings[0].team) 
+                      : "-",
+                    secondPlace: currentStandings[1]?.team 
+                      ? getHungarianTeamName(currentStandings[1].team) 
+                      : "-",
+                    thirdPlace: currentStandings[2]?.team 
+                      ? getHungarianTeamName(currentStandings[2].team) 
+                      : "-",
                   }
                 : league
             ),

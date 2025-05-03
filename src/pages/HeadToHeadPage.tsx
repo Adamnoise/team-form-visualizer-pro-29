@@ -4,48 +4,23 @@ import { useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import TeamSelector from "@/components/h2h/TeamSelector";
 import HeadToHeadComparison from "@/components/h2h/HeadToHeadComparison";
-import { getHungarianTeamName } from "@/data/teamsData"; 
+import { getHungarianTeamName, TEAMS } from "@/data/teamsData"; 
 import { mockMatches } from "@/data/mockData";
-import { calculateStandings } from "@/utils/calculations";
-import { Team, TeamForm } from "@/types";
-
-// Define a type for our imported TEAMS constant
-interface TeamData {
-  id: string;
-  name: string;
-  logoUrl?: string;
-  league?: string;
-}
-
-// Mock TEAMS data reference (assuming it's defined in teamsData.ts)
-declare const TEAMS: TeamData[];
+import { calculateTeamForms } from "@/utils/calculations";
+import { TeamForm } from "@/types";
 
 export default function HeadToHeadPage() {
   const [searchParams] = useSearchParams();
   const initialTeamId = searchParams.get('team');
   
-  const [team1, setTeam1] = useState<TeamData | undefined>(
+  const [team1, setTeam1] = useState<typeof TEAMS[0] | undefined>(
     initialTeamId ? TEAMS.find(t => t.id.toLowerCase() === initialTeamId.toLowerCase()) : undefined
   );
-  const [team2, setTeam2] = useState<TeamData | undefined>();
+  const [team2, setTeam2] = useState<typeof TEAMS[0] | undefined>();
   
   const matches = mockMatches;
-  // Convert standings to TeamForm[] compatible with the HeadToHeadComparison component
-  const rawStandings = calculateStandings(matches);
-  const standings: TeamForm[] = rawStandings.map(entry => ({
-    team: entry.team || entry.teamName,
-    teamId: entry.teamId,
-    played: entry.played,
-    won: entry.won,
-    drawn: entry.drawn,
-    lost: entry.lost,
-    goalsFor: entry.goalsFor,
-    goalsAgainst: entry.goalsAgainst,
-    goalDifference: entry.goalDifference,
-    points: entry.points,
-    position: entry.position,
-    form: entry.form || []
-  }));
+  // Use calculateTeamForms directly instead of converting from standings
+  const teamForms = calculateTeamForms(matches);
 
   return (
     <div className="min-h-screen bg-[#101820] text-white">
@@ -85,7 +60,7 @@ export default function HeadToHeadPage() {
                 team1={team1} 
                 team2={team2} 
                 matches={matches}
-                standings={standings}
+                standings={teamForms}
               />
             </div>
 

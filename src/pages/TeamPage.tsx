@@ -7,19 +7,20 @@ import TeamStats from "@/components/team-page/TeamStats";
 import TeamMatches from "@/components/team-page/TeamMatches";
 import { TEAMS, findTeamByName } from "@/data/teamsData";
 import { mockMatches } from "@/data/mockData";
-import { calculateStandings, calculateTeamForms } from "@/utils/calculations";
-import { TeamForm } from "@/types";
+import { calculateTeamForms } from "@/utils/calculations";
 
 export default function TeamPage() {
   const { teamId } = useParams<{ teamId: string }>();
   const [isLoading, setIsLoading] = useState(true);
   
-  const team = TEAMS.find(t => t.id.toLowerCase() === teamId?.toLowerCase());
+  // Use safe teamId and null check
+  const safeTeamId = teamId?.toLowerCase() || '';
+  const team = TEAMS.find(t => t.id.toLowerCase() === safeTeamId);
   const matches = mockMatches;
   const teamForms = calculateTeamForms(matches);
   
   const teamStats = teamForms.find(
-    stats => stats.team.toLowerCase() === teamId?.toLowerCase()
+    stats => stats.team.toLowerCase() === safeTeamId
   );
 
   // Simulate loading effect
@@ -43,7 +44,7 @@ export default function TeamPage() {
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <TeamStats stats={teamStats} isLoading={isLoading} />
-              <TeamMatches matches={matches} teamId={teamId || ""} isLoading={isLoading} />
+              <TeamMatches matches={matches} teamId={safeTeamId} isLoading={isLoading} />
             </div>
 
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />

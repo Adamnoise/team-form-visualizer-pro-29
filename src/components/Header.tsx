@@ -2,7 +2,7 @@
 "use client"
 
 import { memo } from "react"
-import { BarChart3, ChevronDown, Settings, Bell, Users, BarChart2 } from "lucide-react"
+import { BarChart3, ChevronDown, Settings, Bell, Users, BarChart2, Trophy } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import Logo from "./Logo"

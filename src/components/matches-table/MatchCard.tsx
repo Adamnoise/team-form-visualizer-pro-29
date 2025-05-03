@@ -10,7 +10,6 @@ interface MatchCardProps {
 }
 
 const MatchCard = memo(({ match }: MatchCardProps) => {
-  // Mivel a Match típus változott, frissítenünk kell a property neveket
   const homeWin = match.homeScore > match.awayScore
   const awayWin = match.homeScore < match.awayScore
   const draw = match.homeScore === match.awayScore

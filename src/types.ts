@@ -12,7 +12,7 @@ export interface Team {
 }
 
 export interface Match {
-  id: string;
+  id?: string;
   date: string;
   homeTeamId: string;
   awayTeamId: string;
@@ -21,8 +21,14 @@ export interface Match {
   htHomeScore?: number;
   htAwayScore?: number;
   venue?: string;
-  leagueId: string;
+  leagueId?: string;
   round?: string;
+  home_team?: string; // Added for backward compatibility
+  away_team?: string; // Added for backward compatibility
+  home_score?: number; // Added for backward compatibility
+  away_score?: number; // Added for backward compatibility
+  ht_home_score?: number; // Added for backward compatibility
+  ht_away_score?: number; // Added for backward compatibility
 }
 
 export interface Player {
@@ -59,16 +65,16 @@ export interface LeagueData {
 // New types needed for the components
 export interface TeamForm {
   team: string;
-  teamId: string;
+  teamId?: string; // Made optional to accommodate mock data
   played: number;
-  won: number;
-  drawn: number;
-  lost: number;
+  won?: number; // Made optional to accommodate mock data
+  drawn?: number; // Made optional to accommodate mock data
+  lost?: number; // Made optional to accommodate mock data
   goalsFor: number;
   goalsAgainst: number;
-  goalDifference: number;
+  goalDifference?: number; // Made optional to accommodate mock data
   points: number;
-  form: string[];
+  form?: string[];
   position?: number;
   lastPosition?: number;
 }

@@ -17,7 +17,7 @@ export default function StatisticsPage() {
   const goalsPerRound = rounds.map(round => {
     const roundMatches = matchesByRound[round] || [];
     const goals = roundMatches.reduce(
-      (sum, match) => sum + match.home_score + match.away_score, 
+      (sum, match) => sum + match.homeScore + match.awayScore, 
       0
     );
     return { round, goals };

@@ -14,7 +14,7 @@ const StatisticsOverview = memo(({ matches, standings }: StatisticsOverviewProps
   const stats = useMemo(() => {
     // Total goals calculation
     const totalGoals = matches.reduce(
-      (sum, match) => sum + match.home_score + match.away_score, 
+      (sum, match) => sum + match.homeScore + match.awayScore, 
       0
     );
     
@@ -28,7 +28,7 @@ const StatisticsOverview = memo(({ matches, standings }: StatisticsOverviewProps
     let maxGoals = 0;
     
     matches.forEach(match => {
-      const goals = match.home_score + match.away_score;
+      const goals = match.homeScore + match.awayScore;
       if (goals > maxGoals) {
         maxGoals = goals;
         matchWithMostGoals = match;
@@ -86,7 +86,7 @@ const StatisticsOverview = memo(({ matches, standings }: StatisticsOverviewProps
               {stats.matchWithMostGoals ? (
                 <>
                   <div className="text-xl font-bold text-white">
-                    {getHungarianTeamName(stats.matchWithMostGoals.home_team)} {stats.matchWithMostGoals.home_score} - {stats.matchWithMostGoals.away_score} {getHungarianTeamName(stats.matchWithMostGoals.away_team)}
+                    {getHungarianTeamName(stats.matchWithMostGoals.homeTeamId)} {stats.matchWithMostGoals.homeScore} - {stats.matchWithMostGoals.awayScore} {getHungarianTeamName(stats.matchWithMostGoals.awayTeamId)}
                   </div>
                   <div className="text-sm text-gray-400 mt-1">
                     {stats.maxGoals} goals

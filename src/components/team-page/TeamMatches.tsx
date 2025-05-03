@@ -15,8 +15,8 @@ const TeamMatches = memo(({ matches, teamId, isLoading }: TeamMatchesProps) => {
   const teamMatches = useMemo(() => {
     return matches
       .filter(match => 
-        match.home_team.toLowerCase() === teamId.toLowerCase() || 
-        match.away_team.toLowerCase() === teamId.toLowerCase()
+        (match.homeTeamId && match.homeTeamId.toLowerCase() === teamId.toLowerCase()) || 
+        (match.awayTeamId && match.awayTeamId.toLowerCase() === teamId.toLowerCase())
       )
       .sort((a, b) => {
         try {

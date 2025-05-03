@@ -11,6 +11,7 @@ export const calculateStandings = (matches: Match[]): StandingsEntry[] => {
   // Create a map to store team statistics
   const teamStats = new Map<string, {
     team: string;
+    teamId: string;
     played: number;
     won: number;
     drawn: number;
@@ -24,12 +25,18 @@ export const calculateStandings = (matches: Match[]): StandingsEntry[] => {
 
   // Process each match to update team statistics
   matches.forEach(match => {
-    const { home_team, away_team, home_score, away_score } = match;
+    const homeTeamId = match.homeTeamId;
+    const awayTeamId = match.awayTeamId;
+    const homeScore = match.homeScore;
+    const awayScore = match.awayScore;
+    
+    if (!homeTeamId || !awayTeamId) return;
     
     // Ensure both teams exist in the map
-    if (!teamStats.has(home_team)) {
-      teamStats.set(home_team, {
-        team: home_team,
+    if (!teamStats.has(homeTeamId)) {
+      teamStats.set(homeTeamId, {
+        team: homeTeamId,
+        teamId: homeTeamId,
         played: 0,
         won: 0,
         drawn: 0,
@@ -42,9 +49,10 @@ export const calculateStandings = (matches: Match[]): StandingsEntry[] => {
       });
     }
     
-    if (!teamStats.has(away_team)) {
-      teamStats.set(away_team, {
-        team: away_team,
+    if (!teamStats.has(awayTeamId)) {
+      teamStats.set(awayTeamId, {
+        team: awayTeamId,
+        teamId: awayTeamId,
         played: 0,
         won: 0,
         drawn: 0,
@@ -58,25 +66,25 @@ export const calculateStandings = (matches: Match[]): StandingsEntry[] => {
     }
     
     // Get team stats
-    const homeTeamStats = teamStats.get(home_team)!;
-    const awayTeamStats = teamStats.get(away_team)!;
+    const homeTeamStats = teamStats.get(homeTeamId)!;
+    const awayTeamStats = teamStats.get(awayTeamId)!;
     
     // Update matches played
     homeTeamStats.played += 1;
     awayTeamStats.played += 1;
     
     // Update goals
-    homeTeamStats.goalsFor += home_score;
-    homeTeamStats.goalsAgainst += away_score;
-    awayTeamStats.goalsFor += away_score;
-    awayTeamStats.goalsAgainst += home_score;
+    homeTeamStats.goalsFor += homeScore;
+    homeTeamStats.goalsAgainst += awayScore;
+    awayTeamStats.goalsFor += awayScore;
+    awayTeamStats.goalsAgainst += homeScore;
     
     // Update goal difference
     homeTeamStats.goalDifference = homeTeamStats.goalsFor - homeTeamStats.goalsAgainst;
     awayTeamStats.goalDifference = awayTeamStats.goalsFor - awayTeamStats.goalsAgainst;
     
     // Update wins, draws, losses, points and form based on the result
-    if (home_score > away_score) {
+    if (homeScore > awayScore) {
       // Home team won
       homeTeamStats.won += 1;
       homeTeamStats.points += 3;
@@ -84,7 +92,7 @@ export const calculateStandings = (matches: Match[]): StandingsEntry[] => {
       
       awayTeamStats.lost += 1;
       awayTeamStats.form.push("L");
-    } else if (home_score < away_score) {
+    } else if (homeScore < awayScore) {
       // Away team won
       awayTeamStats.won += 1;
       awayTeamStats.points += 3;
@@ -113,8 +121,8 @@ export const calculateStandings = (matches: Match[]): StandingsEntry[] => {
     }
     
     // Update the map
-    teamStats.set(home_team, homeTeamStats);
-    teamStats.set(away_team, awayTeamStats);
+    teamStats.set(homeTeamId, homeTeamStats);
+    teamStats.set(awayTeamId, awayTeamStats);
   });
 
   // Convert the map to an array and sort by points, goal difference, goals for
@@ -141,6 +149,7 @@ export const calculateStandings = (matches: Match[]): StandingsEntry[] => {
   // Add positions to the standings
   return standings.map((team, index) => ({
     ...team,
+    teamName: team.team,
     position: index + 1,
   }));
 };
@@ -159,9 +168,14 @@ export const calculateTeamForms = (matches: Match[]): TeamForm[] => {
   return standings.map(team => ({
     position: team.position,
     team: team.team,
+    teamId: team.teamId,
     played: team.played,
+    won: team.won,
+    drawn: team.drawn,
+    lost: team.lost,
     goalsFor: team.goalsFor,
     goalsAgainst: team.goalsAgainst,
+    goalDifference: team.goalDifference,
     points: team.points,
     form: team.form
   }));

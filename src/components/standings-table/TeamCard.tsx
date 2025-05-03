@@ -15,6 +15,39 @@ export const TeamCard = ({ entry, maxPoints }: TeamCardProps) => {
   const teamName = getHungarianTeamName(entry.team);
   const pointsPercentage = Math.round((entry.points / maxPoints) * 100);
   
+  // Helper function to render form indicators safely
+  const renderFormIndicators = () => {
+    if (!entry.form) return null;
+    
+    // Handle both string and array types
+    if (Array.isArray(entry.form)) {
+      return entry.form.map((result, i) => (
+        <div key={i} className={cn(
+          "flex items-center justify-center w-6 h-6 rounded-sm text-xs font-medium",
+          result === "W" && "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+          result === "D" && "bg-amber-500/20 text-amber-400 border border-amber-500/30",
+          result === "L" && "bg-red-500/20 text-red-400 border border-red-500/30"
+        )}>
+          {result}
+        </div>
+      ));
+    } else if (typeof entry.form === 'string') {
+      // Convert the string to an array and then map
+      return entry.form.split('').map((result, i) => (
+        <div key={i} className={cn(
+          "flex items-center justify-center w-6 h-6 rounded-sm text-xs font-medium",
+          result === "W" && "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+          result === "D" && "bg-amber-500/20 text-amber-400 border border-amber-500/30",
+          result === "L" && "bg-red-500/20 text-red-400 border border-red-500/30"
+        )}>
+          {result}
+        </div>
+      ));
+    }
+    
+    return null;
+  };
+  
   return (
     <Card className={cn(
       "animate-in fade-in-50 bg-black/20 border-white/5 overflow-hidden transition-all duration-200 hover:bg-black/30",
@@ -87,16 +120,7 @@ export const TeamCard = ({ entry, maxPoints }: TeamCardProps) => {
             <div>
               <div className="text-xs text-gray-400 mb-1.5">Form</div>
               <div className="flex gap-1">
-                {entry.form.map((result, i) => (
-                  <div key={i} className={cn(
-                    "flex items-center justify-center w-6 h-6 rounded-sm text-xs font-medium",
-                    result === "W" && "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-                    result === "D" && "bg-amber-500/20 text-amber-400 border border-amber-500/30",
-                    result === "L" && "bg-red-500/20 text-red-400 border border-red-500/30"
-                  )}>
-                    {result}
-                  </div>
-                ))}
+                {renderFormIndicators()}
               </div>
             </div>
           )}

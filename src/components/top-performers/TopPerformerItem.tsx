@@ -18,24 +18,36 @@ const TopPerformerItem = ({ team, index }: TopPerformerItemProps) => {
   const renderFormIndicators = () => {
     if (!team.form) return null;
     
-    // Kezeli mindkét típust (string és tömb)
-    const formItems = Array.isArray(team.form) 
-      ? team.form.slice(0, 5) 
-      : typeof team.form === "string" && team.form
-        ? team.form.substring(0, 5).split("")
-        : [];
+    // Handle both string and array types
+    if (Array.isArray(team.form)) {
+      // If it's already an array, just slice it
+      return team.form.slice(0, 5).map((result, i) => (
+        <span
+          key={i}
+          className={cn(
+            "w-3 h-3 rounded-full",
+            result === "W" && "bg-emerald-500",
+            result === "D" && "bg-amber-500", 
+            result === "L" && "bg-red-500"
+          )}
+        />
+      ));
+    } else if (typeof team.form === "string") {
+      // If it's a string, split it into characters first
+      return team.form.substring(0, 5).split("").map((result, i) => (
+        <span
+          key={i}
+          className={cn(
+            "w-3 h-3 rounded-full",
+            result === "W" && "bg-emerald-500",
+            result === "D" && "bg-amber-500", 
+            result === "L" && "bg-red-500"
+          )}
+        />
+      ));
+    }
     
-    return formItems.map((result, i) => (
-      <span
-        key={i}
-        className={cn(
-          "w-3 h-3 rounded-full",
-          result === "W" && "bg-emerald-500",
-          result === "D" && "bg-amber-500", 
-          result === "L" && "bg-red-500"
-        )}
-      />
-    ));
+    return null;
   };
   
   return (

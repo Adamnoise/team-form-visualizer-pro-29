@@ -16,6 +16,41 @@ export const TeamStandingsRow = ({ entry, zones }: TeamStandingsRowProps) => {
   
   // Mindig magyar csapatneveket használunk
   const teamName = getHungarianTeamName(entry.team);
+  
+  // Helper function to render form indicators safely
+  const renderFormIndicators = () => {
+    if (!entry.form) return null;
+    
+    // Handle both string and array types
+    if (Array.isArray(entry.form)) {
+      return entry.form.map((result, i) => (
+        <span
+          key={i}
+          className={cn(
+            "inline-flex h-1.5 w-1.5 rounded-full",
+            result === "W" && "bg-emerald-500",
+            result === "D" && "bg-amber-500",
+            result === "L" && "bg-red-500"
+          )}
+        />
+      ));
+    } else if (typeof entry.form === 'string') {
+      // Convert the string to an array and then map
+      return entry.form.split('').map((result, i) => (
+        <span
+          key={i}
+          className={cn(
+            "inline-flex h-1.5 w-1.5 rounded-full",
+            result === "W" && "bg-emerald-500",
+            result === "D" && "bg-amber-500",
+            result === "L" && "bg-red-500"
+          )}
+        />
+      ));
+    }
+    
+    return null;
+  };
 
   return (
     <TableRow
@@ -56,17 +91,7 @@ export const TeamStandingsRow = ({ entry, zones }: TeamStandingsRowProps) => {
         {teamName}
         {entry.form && (
           <div className="mt-1 flex gap-0.5">
-            {entry.form.map((result, i) => (
-              <span
-                key={i}
-                className={cn(
-                  "inline-flex h-1.5 w-1.5 rounded-full",
-                  result === "W" && "bg-emerald-500",
-                  result === "D" && "bg-amber-500",
-                  result === "L" && "bg-red-500"
-                )}
-              />
-            ))}
+            {renderFormIndicators()}
           </div>
         )}
       </TableCell>

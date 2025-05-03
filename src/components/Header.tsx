@@ -2,30 +2,15 @@
 "use client"
 
 import { memo } from "react"
-import { Trophy, BarChart3, ChevronDown, Settings, Bell, Users, BarChart2 } from "lucide-react"
+import { BarChart3, ChevronDown, Settings, Bell, Users, BarChart2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
+import Logo from "./Logo"
 
 interface HeaderProps {
   currentSeason?: string
   className?: string
 }
-
-const Logo = memo(() => (
-  <Link to="/" className="flex items-center gap-3 group">
-    <Trophy
-      size={28}
-      className="text-blue-500 transition-transform duration-300 group-hover:scale-110"
-      aria-hidden="true"
-    />
-    <div>
-      <h1 className="text-xl md:text-2xl font-bold text-white">Soccer Championship Analysis</h1>
-      <p className="text-xs text-gray-400 hidden md:block">Professional Soccer Statistics & Analysis</p>
-    </div>
-  </Link>
-))
-
-Logo.displayName = "Logo"
 
 const SeasonIndicator = memo(({ season }: { season: string }) => (
   <div className="flex items-center gap-3">

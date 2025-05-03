@@ -14,20 +14,21 @@ interface UseMatchesFilterProps {
 export function useMatchesFilter({ matches, filters }: UseMatchesFilterProps) {
   const filteredMatches = useMemo(() => {
     return matches.filter((match) => {
+      // Check if we have a team filter and if either home or away team includes the filter
       const teamMatch = filters.team
-        ? match.home_team.toLowerCase().includes(filters.team.toLowerCase()) ||
-          match.away_team.toLowerCase().includes(filters.team.toLowerCase())
+        ? (match.homeTeamId && match.homeTeamId.toLowerCase().includes(filters.team.toLowerCase())) ||
+          (match.awayTeamId && match.awayTeamId.toLowerCase().includes(filters.team.toLowerCase()))
         : true
 
-      const roundMatch = filters.round ? match.round === filters.round : true
+      const roundMatch = filters.round && match.round ? match.round === filters.round : true
 
       let resultMatch = true
       if (filters.result === "home") {
-        resultMatch = match.home_score > match.away_score
+        resultMatch = match.homeScore > match.awayScore
       } else if (filters.result === "away") {
-        resultMatch = match.home_score < match.away_score
+        resultMatch = match.homeScore < match.awayScore
       } else if (filters.result === "draw") {
-        resultMatch = match.home_score === match.away_score
+        resultMatch = match.homeScore === match.awayScore
       }
 
       return teamMatch && roundMatch && resultMatch

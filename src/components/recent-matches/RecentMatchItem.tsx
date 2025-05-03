@@ -13,9 +13,13 @@ interface RecentMatchItemProps {
 const RecentMatchItem = memo(({ match }: RecentMatchItemProps) => {
   const formattedDate = formatShortDate(match.date);
   
+  // Safely get team IDs and names, providing fallbacks if undefined
+  const homeTeamId = match.homeTeamId || "";
+  const awayTeamId = match.awayTeamId || "";
+  
   // Mindig magyar csapatneveket használunk, még akkor is, ha az adatforrás angol neveket használ
-  const homeTeamName = getHungarianTeamName(match.homeTeamId);
-  const awayTeamName = getHungarianTeamName(match.awayTeamId);
+  const homeTeamName = getHungarianTeamName(homeTeamId);
+  const awayTeamName = getHungarianTeamName(awayTeamId);
   
   return (
     <div className="bg-black/30 rounded-lg p-3 border border-white/5">
@@ -26,7 +30,7 @@ const RecentMatchItem = memo(({ match }: RecentMatchItemProps) => {
       
       <div className="flex justify-between items-center">
         <Link 
-          to={`/teams/${match.homeTeamId.toLowerCase()}`}
+          to={`/teams/${homeTeamId.toLowerCase()}`}
           className="flex-1 text-right hover:text-blue-400 transition-colors"
         >
           <div className="font-medium text-white">{homeTeamName}</div>
@@ -46,7 +50,7 @@ const RecentMatchItem = memo(({ match }: RecentMatchItemProps) => {
         </div>
         
         <Link 
-          to={`/teams/${match.awayTeamId.toLowerCase()}`}
+          to={`/teams/${awayTeamId.toLowerCase()}`}
           className="flex-1 hover:text-blue-400 transition-colors"
         >
           <div className="font-medium text-white">{awayTeamName}</div>

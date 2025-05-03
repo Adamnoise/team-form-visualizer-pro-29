@@ -18,8 +18,11 @@ export interface Match {
   awayTeamId: string;
   homeScore: number;
   awayScore: number;
+  htHomeScore?: number;
+  htAwayScore?: number;
   venue?: string;
   leagueId: string;
+  round?: string;
 }
 
 export interface Player {
@@ -46,6 +49,7 @@ export interface League {
 export interface LeagueData {
   id: string;
   season: string;
+  name?: string;
   winner?: string;
   secondPlace?: string;
   thirdPlace?: string;
@@ -72,6 +76,7 @@ export interface TeamForm {
 export interface StandingsEntry {
   teamId: string;
   teamName: string;
+  team?: string;
   played: number;
   won: number;
   drawn: number;
@@ -81,5 +86,7 @@ export interface StandingsEntry {
   goalDifference: number;
   points: number;
   position: number;
+  previousPosition?: number;
+  form?: string[];
   zone?: string;
 }

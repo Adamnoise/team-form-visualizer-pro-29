@@ -1,66 +1,93 @@
 
-import { memo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { memo, useState } from "react";
+import { Card } from "@/components/ui/card";
 import { Team, TEAMS } from "@/data/teamsData";
 import { SearchIcon } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface TeamSelectorProps {
   selectedTeam?: Team;
   onSelectTeam: (team: Team) => void;
   excludeTeamId?: string;
+  isLoading?: boolean;
 }
 
-const TeamSelector = memo(({ selectedTeam, onSelectTeam, excludeTeamId }: TeamSelectorProps) => {
-  const availableTeams = TEAMS.filter(team => team.id !== excludeTeamId);
+const TeamSelector = memo(({ selectedTeam, onSelectTeam, excludeTeamId, isLoading = false }: TeamSelectorProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  const availableTeams = TEAMS
+    .filter(team => team.id !== excludeTeamId)
+    .filter(team => 
+      searchQuery === "" || 
+      team.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  
+  if (isLoading) {
+    return (
+      <Card className="p-4 shadow-sm border border-gray-100 bg-white rounded-xl">
+        <div className="animate-pulse">
+          <div className="h-10 bg-gray-200 rounded-lg mb-4"></div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="h-24 bg-gray-200 rounded-lg"></div>
+            ))}
+          </div>
+        </div>
+      </Card>
+    );
+  }
   
   return (
-    <Card className="bg-black/20 border-white/5">
-      <CardContent className="p-4">
-        <div className="relative mb-4">
-          <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search teams..."
-            className="w-full bg-black/30 text-white border border-white/10 rounded-lg pl-10 pr-4 py-2.5
-                      focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent
-                      transition-all duration-200 placeholder:text-gray-500"
-            aria-label="Search teams"
-          />
-        </div>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {availableTeams.map(team => (
-            <div
-              key={team.id}
-              onClick={() => onSelectTeam(team)}
-              className={`
-                cursor-pointer p-3 rounded-lg border flex flex-col items-center justify-center gap-2
-                hover:bg-white/5 transition-colors
-                ${selectedTeam?.id === team.id 
-                  ? "border-blue-500 bg-blue-500/10" 
-                  : "border-white/5 bg-black/30"}
-              `}
-            >
-              <div className="w-12 h-12 rounded-full bg-black/30 border border-white/10 flex items-center justify-center p-1">
-                {team.logoUrl ? (
-                  <img
-                    src={team.logoUrl}
-                    alt={`${team.name} logo`}
-                    className="max-w-full max-h-full object-contain"
-                  />
-                ) : (
-                  <div className="text-xl font-bold text-white opacity-30">
-                    {team.name.charAt(0)}
-                  </div>
-                )}
-              </div>
-              <div className="text-sm font-medium text-white text-center">
-                {team.name}
-              </div>
+    <Card className="p-4 shadow-sm border border-gray-100 bg-white rounded-xl">
+      <div className="relative mb-4">
+        <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <input
+          type="text"
+          placeholder="Search teams..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full bg-gray-50 text-gray-800 border border-gray-200 rounded-lg pl-10 pr-4 py-2.5
+                    focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500
+                    transition-all duration-200 placeholder:text-gray-400"
+          aria-label="Search teams"
+        />
+      </div>
+      
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3">
+        {availableTeams.map(team => (
+          <div
+            key={team.id}
+            onClick={() => onSelectTeam(team)}
+            className={`
+              cursor-pointer p-3 rounded-lg border transition-all duration-200
+              flex flex-col items-center justify-center gap-2
+              hover:shadow-md 
+              ${selectedTeam?.id === team.id 
+                ? "border-blue-500 bg-blue-50 shadow-sm" 
+                : "border-gray-100 bg-white hover:border-gray-200"}
+            `}
+          >
+            <Avatar className="w-12 h-12">
+              {team.logoUrl ? (
+                <AvatarImage src={team.logoUrl} alt={`${team.name} logo`} />
+              ) : (
+                <AvatarFallback className="bg-blue-50 text-blue-700">
+                  {team.name.charAt(0)}
+                </AvatarFallback>
+              )}
+            </Avatar>
+            <div className="text-sm font-medium text-center line-clamp-2 h-10 flex items-center">
+              {team.name}
             </div>
-          ))}
-        </div>
-      </CardContent>
+          </div>
+        ))}
+        
+        {availableTeams.length === 0 && (
+          <div className="col-span-full py-8 text-center text-gray-500">
+            No teams found matching your search.
+          </div>
+        )}
+      </div>
     </Card>
   );
 });

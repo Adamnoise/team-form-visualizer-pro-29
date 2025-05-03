@@ -1,7 +1,7 @@
 
-import { memo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { BarChart3 } from "lucide-react";
+import { memo, useMemo } from "react";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { TeamForm } from "@/types";
 
 interface TeamStatsProps {
@@ -9,60 +9,82 @@ interface TeamStatsProps {
   isLoading: boolean;
 }
 
-const StatItem = memo(({ title, value, color = "blue" }: { title: string; value: string | number; color?: string }) => {
-  const getColor = () => {
-    switch (color) {
-      case "green": return "text-emerald-400";
-      case "red": return "text-red-400";
-      case "yellow": return "text-amber-400";
-      default: return "text-blue-400";
-    }
-  };
-
+const StatItem = memo(({ label, value, percentage = 0 }: { label: string; value: string | number; percentage?: number }) => {
   return (
-    <div className="text-center">
-      <div className={`text-2xl font-bold ${getColor()}`}>{value}</div>
-      <div className="text-xs text-gray-400 mt-1">{title}</div>
+    <div className="mb-6">
+      <div className="flex justify-between mb-2">
+        <div className="text-sm text-gray-500">{label}</div>
+        <div className="font-medium">{value}</div>
+      </div>
+      <Progress 
+        value={percentage} 
+        className="h-1.5 bg-gray-100" 
+        indicatorClassName={percentage > 60 ? "bg-blue-500" : percentage > 40 ? "bg-amber-500" : "bg-red-500"} 
+      />
     </div>
   );
 });
 
 StatItem.displayName = "StatItem";
 
-const TeamStats = memo(({ stats, isLoading }: TeamStatsProps) => {
-  if (isLoading) {
-    return (
-      <Card className="bg-black/20 border-white/5">
-        <CardContent className="p-6">
-          <div className="animate-pulse flex justify-between">
-            {[1, 2, 3, 4, 5].map(i => (
-              <div key={i} className="space-y-2">
-                <div className="h-6 w-12 bg-gray-700/50 rounded mx-auto"></div>
-                <div className="h-4 w-16 bg-gray-700/50 rounded mx-auto"></div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
+const TeamStats = memo(({ stats }: TeamStatsProps) => {
+  const performanceData = useMemo(() => {
+    if (!stats) {
+      return {
+        winRate: 0,
+        goalScoringRate: 0,
+        defensiveRating: 0, 
+        formPercentage: 0
+      };
+    }
+    
+    const formArray = Array.isArray(stats.form) 
+      ? stats.form 
+      : (typeof stats.form === "string" && stats.form ? stats.form.split("") : []);
+    
+    const winCount = formArray.filter(result => result === "W").length;
+    const drawCount = formArray.filter(result => result === "D").length;
+    
+    // Calculate percentages for visual indicators
+    const winRate = stats.played > 0 ? Math.round((winCount / stats.played) * 100) : 0;
+    
+    // Goal scoring rate (arbitrary calculation for visualization)
+    const avgGoalsPerGame = stats.played > 0 ? stats.goalsFor / stats.played : 0;
+    const goalScoringRate = Math.min(Math.round(avgGoalsPerGame * 33), 100); // Scale it for better visualization
+    
+    // Defensive rating (lower goals against is better)
+    const avgGoalsAgainstPerGame = stats.played > 0 ? stats.goalsAgainst / stats.played : 0;
+    const defensiveRating = Math.max(100 - Math.round(avgGoalsAgainstPerGame * 33), 0); // Invert for visualization
+    
+    // Form percentage (recent form percentage)
+    const recentForm = formArray.slice(-5);
+    const recentWins = recentForm.filter(result => result === "W").length;
+    const recentDraws = recentForm.filter(result => result === "D").length;
+    const formPercentage = recentForm.length > 0 ? 
+      Math.round(((recentWins + (recentDraws * 0.5)) / recentForm.length) * 100) : 0;
+    
+    return {
+      winRate,
+      goalScoringRate,
+      defensiveRating,
+      formPercentage
+    };
+  }, [stats]);
+  
   if (!stats) {
     return (
-      <Card className="bg-black/20 border-white/5">
-        <CardContent className="p-6 text-center">
-          <div className="text-white opacity-70">No stats available for this team.</div>
-        </CardContent>
+      <Card className="p-6 shadow-sm border border-gray-100 bg-white rounded-xl h-full">
+        <h3 className="text-xl font-bold mb-6 text-gray-800">Season Statistics</h3>
+        <div className="text-center py-12 text-gray-500">
+          No statistics available for this team.
+        </div>
       </Card>
     );
   }
 
-  // Calculate win rate
   const formArray = Array.isArray(stats.form) 
     ? stats.form 
-    : (typeof stats.form === "string" && stats.form 
-        ? stats.form.split("") 
-        : []);
+    : (typeof stats.form === "string" && stats.form ? stats.form.split("") : []);
   
   const winCount = formArray.filter(result => result === "W").length;
   const drawCount = formArray.filter(result => result === "D").length;
@@ -72,29 +94,58 @@ const TeamStats = memo(({ stats, isLoading }: TeamStatsProps) => {
   const goalDiff = stats.goalsFor - stats.goalsAgainst;
 
   return (
-    <Card className="bg-black/20 border-white/5">
-      <CardContent className="p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <BarChart3 className="h-5 w-5 text-blue-500" />
-          <h3 className="text-lg font-medium text-white">Season Statistics</h3>
-        </div>
+    <Card className="p-6 shadow-sm border border-gray-100 bg-white rounded-xl h-full">
+      <h3 className="text-xl font-bold mb-8 text-gray-800">Performance Metrics</h3>
 
-        <div className="grid grid-cols-5 gap-4">
-          <StatItem title="Matches" value={stats.played} />
-          <StatItem title="Wins" value={winCount} color="green" />
-          <StatItem title="Draws" value={drawCount} color="yellow" />
-          <StatItem title="Losses" value={lossCount} color="red" />
-          <StatItem title="Win Rate" value={`${winRate}%`} />
-        </div>
+      <StatItem 
+        label="Win Rate" 
+        value={`${winRate}%`}
+        percentage={performanceData.winRate} 
+      />
+      
+      <StatItem 
+        label="Goal Scoring" 
+        value={`${stats.goalsFor} goals`} 
+        percentage={performanceData.goalScoringRate}
+      />
+      
+      <StatItem 
+        label="Defense" 
+        value={`${stats.goalsAgainst} conceded`} 
+        percentage={performanceData.defensiveRating}
+      />
+      
+      <StatItem 
+        label="Recent Form" 
+        value={formArray.slice(-5).join(' ')}
+        percentage={performanceData.formPercentage} 
+      />
 
-        <div className="h-px bg-white/5 my-6" />
-
-        <div className="grid grid-cols-3 gap-4">
-          <StatItem title="Points" value={stats.points} color="blue" />
-          <StatItem title="Goals Scored" value={stats.goalsFor} color="green" />
-          <StatItem title="Goal Difference" value={goalDiff > 0 ? `+${goalDiff}` : goalDiff} color={goalDiff > 0 ? "green" : "red"} />
+      <div className="mt-10 grid grid-cols-3 gap-2 text-center">
+        <div className="bg-green-50 p-4 rounded-lg">
+          <div className="text-2xl font-bold text-green-600">{winCount}</div>
+          <div className="text-xs text-gray-500 mt-1">Wins</div>
         </div>
-      </CardContent>
+        
+        <div className="bg-amber-50 p-4 rounded-lg">
+          <div className="text-2xl font-bold text-amber-600">{drawCount}</div>
+          <div className="text-xs text-gray-500 mt-1">Draws</div>
+        </div>
+        
+        <div className="bg-red-50 p-4 rounded-lg">
+          <div className="text-2xl font-bold text-red-600">{lossCount}</div>
+          <div className="text-xs text-gray-500 mt-1">Losses</div>
+        </div>
+      </div>
+
+      <div className="mt-6 pt-6 border-t border-gray-100">
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-500">Goal Difference</span>
+          <span className={`font-semibold ${goalDiff > 0 ? 'text-green-600' : goalDiff < 0 ? 'text-red-600' : 'text-gray-600'}`}>
+            {goalDiff > 0 ? `+${goalDiff}` : goalDiff}
+          </span>
+        </div>
+      </div>
     </Card>
   );
 });
